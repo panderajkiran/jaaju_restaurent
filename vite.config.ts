@@ -12,4 +12,7 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Target Vercel: Nitro emits to .vercel/output (Build Output API), which
+  // Vercel auto-detects. Overrides the wrapper's default Cloudflare target.
+  nitro: { preset: "vercel" },
 });
