@@ -109,6 +109,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.cdnfonts.com/css/aguero-serif-free",
       },
+      // Hero wordmark fonts (home page): "York" for JAAJU, "Ansam" for Kitchen & Bar.
+      {
+        rel: "stylesheet",
+        href: "https://fonts.cdnfonts.com/css/york",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.cdnfonts.com/css/ansam",
+      },
     ],
   }),
   shellComponent: RootShell,
