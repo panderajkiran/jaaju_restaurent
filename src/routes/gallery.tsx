@@ -4,18 +4,31 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Reveal } from "@/components/motion/Reveal";
 
-import jaajuBar from "@/assets/jaaju-bar.webp";
-import heroDish from "@/assets/home-hero-dish.jpeg";
-import interiorJaaju from "@/assets/interior-jaaju.webp";
-import spices from "@/assets/gallery-spices.jpg";
-import reserveImg from "@/assets/reserve.webp";
-import parotta from "@/assets/gallery-parotta.jpg";
-import aboveFooter from "@/assets/above-footer.webp";
-import coffee from "@/assets/gallery-coffee.jpg";
-import thali from "@/assets/hero-thali.jpg";
-import biryani from "@/assets/dish-biryani.jpg";
-import dosa from "@/assets/dish-dosa.jpg";
-import idli from "@/assets/dish-idli.jpg";
+// Auto-load every gallery image from src/assets/gallery (gallery1.webp …).
+// Drop new files in that folder and they appear here — no code changes needed.
+// Vite hashes & caches them at build time.
+const galleryModules = import.meta.glob(
+  "../assets/gallery/*.{webp,png,jpg,jpeg,avif}",
+  {
+    eager: true,
+    import: "default",
+  },
+) as Record<string, string>;
+
+// Order gallery<number>.* files numerically (1,2,…,35), then any other
+// image files (e.g. image.png) after, sorted by name. Non-image files in
+// the folder (.mhtml etc.) are never matched by the glob above.
+const GALLERY = Object.entries(galleryModules)
+  .map(([path, src]) => {
+    const name = path.split("/").pop() ?? path;
+    const match = name.match(/^gallery(\d+)\./);
+    return { src, name, n: match ? Number(match[1]) : Number.POSITIVE_INFINITY };
+  })
+  .sort((a, b) => a.n - b.n || a.name.localeCompare(b.name))
+  .map(({ src }) => ({
+    src,
+    alt: "Jaaju Kitchen & Bar — gallery photo",
+  }));
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -35,21 +48,6 @@ export const Route = createFileRoute("/gallery")({
   }),
   component: GalleryPage,
 });
-
-const GALLERY: { src: string; alt: string }[] = [
-  { src: jaajuBar, alt: "The Jaaju bar — backlit bottles and terracotta tiling" },
-  { src: heroDish, alt: "Signature Hyderabadi chicken biryani, steaming" },
-  { src: interiorJaaju, alt: "Jaaju dining room with teak chairs and greenery" },
-  { src: spices, alt: "Hand-pounded Andhra spices" },
-  { src: reserveImg, alt: "Bar seating and dining tables at Jaaju" },
-  { src: parotta, alt: "Flaky layered parotta, fresh off the tawa" },
-  { src: aboveFooter, alt: "Warm interior corner of Jaaju Kitchen & Bar" },
-  { src: coffee, alt: "Irani chai served at the table" },
-  { src: thali, alt: "A generous Andhra thali" },
-  { src: biryani, alt: "Long-grain dum biryani plated" },
-  { src: dosa, alt: "Crisp golden dosa" },
-  { src: idli, alt: "Soft steamed idli with chutney" },
-];
 
 function GalleryPage() {
   return (
